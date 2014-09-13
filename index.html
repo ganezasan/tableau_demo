@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>nvd3入門</title>
+  <link href="css/nv.d3.css" rel="stylesheet" type="text/css">
+  <style>
+    #chart svg {
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart">
+    <svg></svg>
+  </div>
+
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="js/nv.d3.js"></script>
+  <script>
+  d3.json("http://54.64.8.194:8000/api/select_tableau_demo.php",function(data){
+    nv.addGraph(function() {
+      var chart = nv.models.scatterChart()
+                    .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
+                    .showDistY(true)
+                    .transitionDuration(350)
+                    .color(d3.scale.category10().range());
+
+      //Configure how the tooltip looks.
+      chart.tooltipContent(function(key) {
+          return '<h3>' + key + '</h3>';
+      });
+
+      //We want to show shapes other than circles.
+      chart.scatter.onlyCircles(false);
+      d3.select('#chart svg')
+          .datum(data)
+          .call(chart);
+
+      nv.utils.windowResize(chart.update);
+
+      return chart;
+    });
+  });
+
+  </script>
+</body>
+</html>
